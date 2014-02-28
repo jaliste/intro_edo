@@ -1,0 +1,41 @@
+from poblacion_eeuu import population
+from pylab import *
+from refigure2 import *
+import numpy as np
+population[0,1]
+population[0,1]/population[1,1]
+(population[1,0]-population[0,0])
+i = 0
+j = 1
+k = log(population[j,1]/population[i,1])/(population[j,0]-population[i,0])
+
+predicted = 3.9*np.exp(k*(population[:,0]-1790))
+
+with figure() as fig: 
+    plot(population[:,0],population[:,1],label='Population')
+    plot(population[:,0],predicted,label='Predicted')
+    legend(loc='upper right')
+N = 300
+
+dPdt = ((population[1:,1] - population[:-1,1])/10.)/population[:-1,1]
+x = population[:-1,1]
+A = np.vstack([x,np.ones(len(x))]).T
+m, b = np.linalg.lstsq(A,dPdt)[0]
+
+k = b
+k
+N = -k/m
+N
+
+with figure()as fig:
+    plot(population[1:,1],dPdt)
+    plot(population[1:,1],-k/N*population[1:,1] + k)
+D = 0.009
+predicted_log = N*D*np.exp(k*(population[:,0]-1790))/(1+D*np.exp(k*(population[:,0]-1790)))
+
+with figure() as fig:
+    plot(population[:,0],population[:,1])
+    plot(population[:,0],predicted_log)
+
+
+    

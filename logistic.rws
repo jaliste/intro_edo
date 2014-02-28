@@ -1,0 +1,26 @@
+from numpy import *
+import pylab as p
+from  poblacion_eeuu import population
+from refigure2 import *
+k = 0.033
+N = 267
+nb_points   = 20
+def normalize (DX,DY):
+    M = (hypot(DX, DY))                           # Norm of the growth rate 
+    M[ M == 0] = 1.                                 # Avoid zero division errors 
+    return DX / M , DY / M                                      # Normalize each arrows
+def logistic_equation (y, t=0):
+    return k*(1-y/N)*y    
+x = population[:,0] 
+y = linspace(0, 400, nb_points)
+X1 , Y1  = meshgrid(x, y)                       # create a grid
+DX1 = np.ones(X1.shape)
+DY1 = logistic_equation(Y1)
+DX1, DY1 = normalize(DX1, DY1)
+from scipy import integrate
+t = x
+X0 = array([267.,2,3,200,100,3,350])     
+X, infodict = integrate.odeint(logistic_equation, X0, t, full_output=True)
+with figure() as fig:
+    plot(t,X)
+    Q = p.quiver(X1,Y1, DX1, DY1, pivot='mid')

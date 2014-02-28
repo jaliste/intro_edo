@@ -1,0 +1,34 @@
+from numpy import *
+import pylab as p
+import edo
+from refigure2 import *
+from scipy import integrate
+
+a = 0
+b = 100
+c = 600
+d = 800
+nb_points   = 20
+
+# Normalize each arrows
+def dydt (y, t=0.):
+    #    return y - t
+    return 20. - 3*y/100.
+
+x = linspace(a, b, nb_points)
+y = linspace(c, d, nb_points)
+X1 , Y1  = meshgrid(x, y)
+DX1 = np.ones(X1.shape)
+DY1 = dydt(Y1,X1)
+DX1, DY1 = edo.normalize(DX1, DY1)
+
+X0 = array([800.,600.])     
+xx = linspace(a,b,nb_points*1000)
+X, infodict = integrate.odeint(dydt, X0, x, full_output=True)
+X2, infodict = integrate.odeint(dydt, X0,xx , full_output=True)
+with figure() as fig:
+    #plot(x,X,'.')
+    plot(xx,X2)
+    p.xlim(a, b)
+    p.ylim(c, d)
+    q = p.quiver(X1,Y1, DX1, DY1, pivot='mid')
